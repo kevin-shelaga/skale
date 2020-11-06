@@ -1,4 +1,5 @@
-/*
+/*Package cmd licensing
+
 Copyright © 2020 NAME HERE <EMAIL ADDRESS>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,21 +19,24 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/kevin-shelaga/skale/k8s"
 	"github.com/spf13/cobra"
 )
 
 // upCmd represents the up command
 var upCmd = &cobra.Command{
 	Use:   "up",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Dynamically scale all deployments up",
+	Long: `Dynamically scale all deployments up to the 
+minimum replicas. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+skale up`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("up called")
+		fmt.Println("Scaling up...")
+		client := k8s.Connect()
+		deploys := k8s.GetDeployments(client)
+		hpas := k8s.GetHorizontalPodAutoscalers(client)
+		k8s.ScaleDeployments(client, deploys, hpas, k8s.ScaleUp)
 	},
 }
 
