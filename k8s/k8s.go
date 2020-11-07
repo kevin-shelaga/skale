@@ -18,8 +18,8 @@ import (
 //K interace for k8s package
 type K interface {
 	Connect() dynamic.Interface
-	GetDeployments(client dynamic.Interface) []unstructured.Unstructured
-	GetHorizontalPodAutoscalers(client dynamic.Interface) []H
+	GetDeployments(client dynamic.Interface, namespace string) []unstructured.Unstructured
+	GetHorizontalPodAutoscalers(client dynamic.Interface, namespace string) []H
 	ScaleDeployments(client dynamic.Interface, deployments []unstructured.Unstructured)
 }
 
@@ -61,12 +61,12 @@ func Connect() dynamic.Interface {
 }
 
 //GetDeployments gets all deployments from all namespaces except kube-system
-func GetDeployments(client dynamic.Interface) []unstructured.Unstructured {
+func GetDeployments(client dynamic.Interface, namespace string) []unstructured.Unstructured {
 
 	var result []unstructured.Unstructured
 	deploymentRes := schema.GroupVersionResource{Group: "apps", Version: "v1", Resource: "deployments"}
 
-	list, err := client.Resource(deploymentRes).Namespace("").List(context.TODO(), metav1.ListOptions{})
+	list, err := client.Resource(deploymentRes).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -87,12 +87,12 @@ func GetDeployments(client dynamic.Interface) []unstructured.Unstructured {
 }
 
 //GetHorizontalPodAutoscalers gets all hpas from all namespaces except kube-system
-func GetHorizontalPodAutoscalers(client dynamic.Interface) []H {
+func GetHorizontalPodAutoscalers(client dynamic.Interface, namespace string) []H {
 
 	var result []H
 	hpaRes := schema.GroupVersionResource{Group: "autoscaling", Version: "v1", Resource: "horizontalpodautoscalers"}
 
-	list, err := client.Resource(hpaRes).Namespace("").List(context.TODO(), metav1.ListOptions{})
+	list, err := client.Resource(hpaRes).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}

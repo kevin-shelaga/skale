@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/kevin-shelaga/skale/helpers"
 	"github.com/kevin-shelaga/skale/k8s"
 	"github.com/spf13/cobra"
 )
@@ -33,9 +34,15 @@ replicas. For example:
 skale down`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Scaling down...")
+
+		namespaces := helpers.ProcessFlags(args, "n")
+
 		client := k8s.Connect()
-		deploys := k8s.GetDeployments(client)
-		k8s.ScaleDeployments(client, deploys, nil, k8s.ScaleDown)
+
+		for _, n := range namespaces {
+			deploys := k8s.GetDeployments(client, n)
+			k8s.ScaleDeployments(client, deploys, nil, k8s.ScaleDown)
+		}
 	},
 }
 
@@ -50,5 +57,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// downCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	downCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
+
 }

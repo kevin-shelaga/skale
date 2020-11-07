@@ -21,7 +21,7 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "up"
+                "up", "n", "default", "n", "apis" 
             ]
         },
         {
@@ -32,7 +32,7 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "down"
+                "down", "n", "default", "n", "apis" 
             ]
         },
         {
@@ -44,6 +44,17 @@
             "env": {},
             "args": [
                 "help"
+            ]
+        },
+        {
+            "name": "skale version",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}",
+            "env": {},
+            "args": [
+                "--version"
             ]
         },
     ]
