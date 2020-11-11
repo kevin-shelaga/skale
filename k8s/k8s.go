@@ -124,20 +124,29 @@ func GetHorizontalPodAutoscalers(client dynamic.Interface, namespace string) []H
 		}
 	}
 
-	return result
+	if len(result) > 0 {
+		return result
+	}
+
+	fmt.Println("No deployments found in namespace: " + namespace + "!")
+	return nil
 }
 
 //ScaleDeployments scales all deployments from all namespaces except kube-system either down to 0, or up to the minimum replicas if available(or 1)
-func ScaleDeployments(client dynamic.Interface, deployments []unstructured.Unstructured, hpas []H, scaleAction string) {
+func ScaleDeployments(client dynamic.Interface, deployments []unstructured.Unstructured, hpas []H, scaleAction string, dryRun bool) {
 
+	var changeMade bool = false
 	var updateRequired bool = false
 	deploymentRes := schema.GroupVersionResource{Group: "apps", Version: "v1", Resource: "deployments"}
 
 	var newReplicas int64 = 0
 
+	var namespace string
 	for _, d := range deployments {
 
 		result, getErr := client.Resource(deploymentRes).Namespace(d.GetNamespace()).Get(context.TODO(), d.GetName(), metav1.GetOptions{})
+
+		namespace = d.GetNamespace()
 
 		if getErr != nil {
 			panic(fmt.Errorf("failed to get latest version of Deployment: %v", getErr))
@@ -168,13 +177,21 @@ func ScaleDeployments(client dynamic.Interface, deployments []unstructured.Unstr
 		}
 
 		if updateRequired {
+			changeMade = true
 			updateRequired = false
 			replicas, _, _ := unstructured.NestedInt64(d.Object, "spec", "replicas")
-			_, updateErr := client.Resource(deploymentRes).Namespace(d.GetNamespace()).Update(context.TODO(), result, metav1.UpdateOptions{})
-			fmt.Printf(" * %s (%d replicas) -> (%d replicas)\n", d.GetName(), replicas, newReplicas)
-			if updateErr != nil {
-				panic(fmt.Errorf("failed to set replica value: %v", updateErr))
+			if !dryRun {
+				_, updateErr := client.Resource(deploymentRes).Namespace(d.GetNamespace()).Update(context.TODO(), result, metav1.UpdateOptions{})
+
+				if updateErr != nil {
+					panic(fmt.Errorf("failed to set replica value: %v", updateErr))
+				}
 			}
+			fmt.Printf(" * %s (%d replicas) -> (%d replicas)\n", d.GetName(), replicas, newReplicas)
 		}
+
+	}
+	if !changeMade && deployments != nil {
+		fmt.Println("No deployments meet scaling criteria in namespace: " + namespace + "!")
 	}
 }

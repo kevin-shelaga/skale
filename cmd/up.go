@@ -33,6 +33,9 @@ minimum replicas. For example:
 
 skale up`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if helpers.IsDryRun(args) {
+			fmt.Println("Dry run! No changes will be made!")
+		}
 		fmt.Println("Scaling up...")
 
 		namespaces := helpers.ProcessFlags(args, "n")
@@ -42,7 +45,7 @@ skale up`,
 		for _, n := range namespaces {
 			deploys := k8s.GetDeployments(client, n)
 			hpas := k8s.GetHorizontalPodAutoscalers(client, n)
-			k8s.ScaleDeployments(client, deploys, hpas, k8s.ScaleUp)
+			k8s.ScaleDeployments(client, deploys, hpas, k8s.ScaleUp, helpers.IsDryRun(args))
 		}
 	},
 }
@@ -59,4 +62,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	upCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
+	upCmd.Flags().BoolP("dry-run", "d", true, "dry run scale")
 }

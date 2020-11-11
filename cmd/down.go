@@ -33,7 +33,11 @@ replicas. For example:
 
 skale down`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if helpers.IsDryRun(args) {
+			fmt.Println("Dry run! No changes will be made!")
+		}
 		fmt.Println("Scaling down...")
+
 
 		namespaces := helpers.ProcessFlags(args, "n")
 
@@ -41,7 +45,7 @@ skale down`,
 
 		for _, n := range namespaces {
 			deploys := k8s.GetDeployments(client, n)
-			k8s.ScaleDeployments(client, deploys, nil, k8s.ScaleDown)
+			k8s.ScaleDeployments(client, deploys, nil, k8s.ScaleDown, helpers.IsDryRun(args))
 		}
 	},
 }
@@ -58,5 +62,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	downCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
-
+	downCmd.Flags().BoolP("dry-run", "d", true, "dry run scale")
 }

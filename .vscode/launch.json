@@ -21,7 +21,12 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "up", "n", "default", "n", "apis" 
+                "up",
+                "n",
+                "default",
+                "n",
+                "apis",
+                "d"
             ]
         },
         {
@@ -32,7 +37,12 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "down", "n", "default", "n", "apis" 
+                "down",
+                "n",
+                "default",
+                "n",
+                "apis",
+                "d"
             ]
         },
         {

@@ -10,3 +10,15 @@ func ProcessFlags(args []string, flagToFind string) []string {
 	}
 	return result
 }
+
+//IsDryRun returns true/false is d flag is present
+func IsDryRun(args []string) bool {
+	var result bool = false
+	for i := 0; i < len(args); i++ {
+		if args[i] == "d" {
+			result = true
+			break
+		}
+	}
+	return result
+}
