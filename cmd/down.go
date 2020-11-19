@@ -41,11 +41,11 @@ skale down`,
 
 		namespaces := helpers.ProcessFlags(args, "n")
 
-		client := k8s.Connect()
+		k8s.Connect()
 
 		for _, n := range namespaces {
-			deploys := k8s.GetDeployments(client, n)
-			k8s.ScaleDeployments(client, deploys, nil, k8s.ScaleDown, helpers.IsDryRun(args))
+			deploys := k8s.GetDeployments(n)
+			k8s.ScaleDeployments(deploys, nil, k8s.ScaleDown, helpers.IsDryRun(args))
 		}
 	},
 }
