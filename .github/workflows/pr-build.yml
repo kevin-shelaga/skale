@@ -6,11 +6,6 @@ on:
       - "*"
       - "!master"
 
-env:
-  IMAGE: cronjob-cleaner
-  K8S_NAMESPACE: monitoring
-  VERSION: 0.1-alpine3.12
-
 jobs:
   build:
     runs-on: ubuntu-latest
