@@ -1,0 +1,29 @@
+name: pr-build
+
+on:
+  push:
+    branches:
+      - "*"
+      - "!master"
+
+env:
+  IMAGE: cronjob-cleaner
+  K8S_NAMESPACE: monitoring
+  VERSION: 0.1-alpine3.12
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      #Setup
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.15.6"
+
+      #Test
+      - run: go test -v ./... -coverprofile="coverage.txt" -covermode=atomic
+
+      #Upload codecov
+      - run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}

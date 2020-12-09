@@ -38,7 +38,6 @@ skale down`,
 		}
 		fmt.Println("Scaling down...")
 
-
 		namespaces := helpers.ProcessFlags(args, "n")
 
 		k8s.Connect()
