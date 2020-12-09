@@ -15,7 +15,7 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-//K interace for k8s package
+//K interface for k8s package
 type K interface {
 	Connect() dynamic.Interface
 	GetDeployments(Client dynamic.Interface, namespace string) []unstructured.Unstructured
