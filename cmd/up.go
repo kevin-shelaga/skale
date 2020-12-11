@@ -40,12 +40,14 @@ skale up`,
 
 		namespaces := helpers.ProcessFlags(args, "n")
 
-		k8s.Connect()
+		var k k8s.KubernetesAPI = k8s.KubernetesAPI{Client: nil}
+
+		k.Client = k.Connect()
 
 		for _, n := range namespaces {
-			deploys := k8s.GetDeployments(n)
-			hpas := k8s.GetHorizontalPodAutoscalers(n)
-			k8s.ScaleDeployments(deploys, hpas, k8s.ScaleUp, helpers.IsDryRun(args))
+			deploys := k.GetDeployments(n)
+			hpas := k.GetHorizontalPodAutoscalers(n)
+			k.ScaleDeployments(deploys, hpas, k8s.ScaleUp, helpers.IsDryRun(args))
 		}
 	},
 }
