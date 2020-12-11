@@ -15,12 +15,17 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-//K interface for k8s package
-type K interface {
+//K8s interface for k8s package
+type K8s interface {
 	Connect() dynamic.Interface
 	GetDeployments(Client dynamic.Interface, namespace string) []unstructured.Unstructured
-	GetHorizontalPodAutoscalers(Client dynamic.Interface, namespace string) []H
+	GetHorizontalPodAutoscalers(Client dynamic.Interface, namespace string) []Hpa
 	ScaleDeployments(Client dynamic.Interface, deployments []unstructured.Unstructured)
+}
+
+//KubernetesAPI is the struct for k8s
+type KubernetesAPI struct {
+	Client dynamic.Interface
 }
 
 const (
@@ -31,20 +36,17 @@ const (
 	ScaleDown = "DOWN"
 )
 
-//H is the hpa struct
-type H struct {
+//Hpa is the hpa struct
+type Hpa struct {
 	name             string
 	targetDeployment string
 	minReplicas      int64
 }
 
-//Client for kubernetes calls
-var Client dynamic.Interface = nil
-
 //Connect returns new kubernetes Client
-func Connect() {
+func (k KubernetesAPI) Connect() dynamic.Interface {
 
-	if Client == nil {
+	if k.Client == nil {
 		var kubeconfig *string
 		if home := homedir.HomeDir(); home != "" {
 			kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -58,21 +60,23 @@ func Connect() {
 			panic(err)
 		}
 		clientOut, err := dynamic.NewForConfig(config)
-		Client = clientOut
 		if err != nil {
 			panic(err)
 		}
 
+		return clientOut
 	}
+
+	return k.Client
 }
 
 //GetDeployments gets all deployments from all namespaces except kube-system
-func GetDeployments(namespace string) []unstructured.Unstructured {
+func (k KubernetesAPI) GetDeployments(namespace string) []unstructured.Unstructured {
 
 	var result []unstructured.Unstructured
 	deploymentRes := schema.GroupVersionResource{Group: "apps", Version: "v1", Resource: "deployments"}
 
-	list, err := Client.Resource(deploymentRes).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
+	list, err := k.Client.Resource(deploymentRes).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -93,12 +97,12 @@ func GetDeployments(namespace string) []unstructured.Unstructured {
 }
 
 //GetHorizontalPodAutoscalers gets all hpas from all namespaces except kube-system
-func GetHorizontalPodAutoscalers(namespace string) []H {
+func (k KubernetesAPI) GetHorizontalPodAutoscalers(namespace string) []Hpa {
 
-	var result []H
+	var result []Hpa
 	hpaRes := schema.GroupVersionResource{Group: "autoscaling", Version: "v1", Resource: "horizontalpodautoscalers"}
 
-	list, err := Client.Resource(hpaRes).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
+	list, err := k.Client.Resource(hpaRes).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -121,7 +125,7 @@ func GetHorizontalPodAutoscalers(namespace string) []H {
 				continue
 			}
 
-			var hpa = new(H)
+			var hpa = new(Hpa)
 			hpa.name = name
 			hpa.minReplicas = minReplicas
 			hpa.targetDeployment = targetDeployment
@@ -139,7 +143,7 @@ func GetHorizontalPodAutoscalers(namespace string) []H {
 }
 
 //ScaleDeployments scales all deployments from all namespaces except kube-system either down to 0, or up to the minimum replicas if available(or 1)
-func ScaleDeployments(deployments []unstructured.Unstructured, hpas []H, scaleAction string, dryRun bool) {
+func (k KubernetesAPI) ScaleDeployments(deployments []unstructured.Unstructured, hpas []Hpa, scaleAction string, dryRun bool) {
 
 	var changeMade bool = false
 	var updateRequired bool = false
@@ -150,7 +154,7 @@ func ScaleDeployments(deployments []unstructured.Unstructured, hpas []H, scaleAc
 	var namespace string
 	for _, d := range deployments {
 
-		result, getErr := Client.Resource(deploymentRes).Namespace(d.GetNamespace()).Get(context.TODO(), d.GetName(), metav1.GetOptions{})
+		result, getErr := k.Client.Resource(deploymentRes).Namespace(d.GetNamespace()).Get(context.TODO(), d.GetName(), metav1.GetOptions{})
 
 		namespace = d.GetNamespace()
 
@@ -187,7 +191,7 @@ func ScaleDeployments(deployments []unstructured.Unstructured, hpas []H, scaleAc
 			updateRequired = false
 			replicas, _, _ := unstructured.NestedInt64(d.Object, "spec", "replicas")
 			if !dryRun {
-				_, updateErr := Client.Resource(deploymentRes).Namespace(d.GetNamespace()).Update(context.TODO(), result, metav1.UpdateOptions{})
+				_, updateErr := k.Client.Resource(deploymentRes).Namespace(d.GetNamespace()).Update(context.TODO(), result, metav1.UpdateOptions{})
 
 				if updateErr != nil {
 					panic(fmt.Errorf("failed to set replica value: %v", updateErr))

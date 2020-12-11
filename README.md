@@ -8,7 +8,19 @@ Skale is a CLI written in go to automatically scale up and down deployments in y
 [![codecov](https://codecov.io/gh/kevin-shelaga/skale/branch/main/graph/badge.svg?token=SY9DP3GBB8)](https://codecov.io/gh/kevin-shelaga/skale)
 ![build](https://github.com/kevin-shelaga/skale/workflows/build/badge.svg)
 
+## Install
+
+```sh
+go get github.com/kevin-shelaga/skale
+```
+
 ## Usuage
+
+```sh
+skale down n apis
+
+skale up n apis
+```
 
 ## Whats left
 

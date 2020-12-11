@@ -11,7 +11,7 @@ func ProcessFlags(args []string, flagToFind string) []string {
 	return result
 }
 
-//IsDryRun returns true/false is d flag is present
+//IsDryRun returns true/false if d flag is present
 func IsDryRun(args []string) bool {
 	var result bool = false
 	for i := 0; i < len(args); i++ {
