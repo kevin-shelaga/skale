@@ -22,11 +22,11 @@
             "env": {},
             "args": [
                 "up",
-                "n",
+                "-n",
                 "default",
-                "n",
+                "-n",
                 "apis",
-                "d"
+                "-d"
             ]
         },
         {
@@ -38,11 +38,11 @@
             "env": {},
             "args": [
                 "down",
-                "n",
+                "-n",
                 "default",
-                "n",
+                "-n",
                 "apis",
-                "d"
+                "-d"
             ]
         },
         {
@@ -53,7 +53,7 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "help"
+                "--help"
             ]
         },
         {

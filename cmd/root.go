@@ -38,6 +38,7 @@ auto scaling. For example:
 
 skale up
 skale down`,
+	Version: "0.1",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -51,6 +52,9 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	rootCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
+	rootCmd.Flags().BoolP("dry-run", "d", true, "dry run scale")
 }
 
 // initConfig reads in config file and ENV variables if set.

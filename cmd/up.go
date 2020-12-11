@@ -50,6 +50,7 @@ skale up`,
 			k.ScaleDeployments(deploys, hpas, k8s.ScaleUp, helpers.IsDryRun(args))
 		}
 	},
+	DisableFlagParsing: true,
 }
 
 func init() {
@@ -63,6 +64,4 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	upCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
-	upCmd.Flags().BoolP("dry-run", "d", true, "dry run scale")
 }
