@@ -36,8 +36,9 @@ var rootCmd = &cobra.Command{
 in your cluster. This cli can be used as a cost saving measure to force cluster 
 auto scaling. For example:
 
-skale up
-skale down`,
+skale up --all-namespaces
+skale down --all-namespaces`,
+	Version: "0.1",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -51,6 +52,11 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	rootCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
+	rootCmd.Flags().StringP("all-namespaces", "A", "", "all namespaces")
+	rootCmd.Flags().BoolP("dry-run", "d", false, "dry run, no changes will be made to the cluster")
+	rootCmd.Flags().BoolP("verbose", "v", false, "verbose logging")
 }
 
 // initConfig reads in config file and ENV variables if set.

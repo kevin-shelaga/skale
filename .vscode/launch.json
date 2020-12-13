@@ -22,11 +22,12 @@
             "env": {},
             "args": [
                 "up",
-                "n",
-                "default",
-                "n",
-                "apis",
-                "d"
+                "--all-namespaces",
+                // "-n",
+                // "default",
+                // "-n",
+                // "apis",
+                "-d"
             ]
         },
         {
@@ -38,11 +39,8 @@
             "env": {},
             "args": [
                 "down",
-                "n",
-                "default",
-                "n",
-                "apis",
-                "d"
+                "-A",
+                "--dry-run"
             ]
         },
         {
@@ -53,7 +51,7 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "help"
+                "--help"
             ]
         },
         {

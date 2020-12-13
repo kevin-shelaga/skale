@@ -38,7 +38,7 @@ skale down`,
 		}
 		fmt.Println("Scaling down...")
 
-		namespaces := helpers.ProcessFlags(args, "n")
+		namespaces := helpers.GetNamespaces(args)
 
 		var k k8s.KubernetesAPI = k8s.KubernetesAPI{Client: nil}
 
@@ -48,7 +48,11 @@ skale down`,
 			deploys := k.GetDeployments(n)
 			k.ScaleDeployments(deploys, nil, k8s.ScaleDown, helpers.IsDryRun(args))
 		}
+
+		fmt.Println("Done!")
+
 	},
+	DisableFlagParsing: true,
 }
 
 func init() {
@@ -62,6 +66,4 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	downCmd.Flags().StringP("namespace", "n", "default", "namespace to scale")
-	downCmd.Flags().BoolP("dry-run", "d", true, "dry run scale")
 }

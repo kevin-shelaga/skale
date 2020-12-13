@@ -70,7 +70,7 @@ func (k KubernetesAPI) Connect() dynamic.Interface {
 	return k.Client
 }
 
-//GetDeployments gets all deployments from all namespaces except kube-system
+//GetDeployments gets all deployments from the specified namespace
 func (k KubernetesAPI) GetDeployments(namespace string) []unstructured.Unstructured {
 
 	var result []unstructured.Unstructured
