@@ -17,9 +17,30 @@ go get github.com/kevin-shelaga/skale
 ## Usuage
 
 ```sh
-skale down n apis
+Usage:
+  skale [command]
 
-skale up n apis
+Available Commands:
+Skale was built to dynamically scale all deployments up and down
+in your cluster. This cli can be used as a cost saving measure to force cluster 
+auto scaling. For example:
+
+skale up
+skale down
+
+  down        Dynamically scale all deployments down
+  help        Help about any command
+  up          Dynamically scale all deployments up
+
+Flags:
+  -A, --all-namespaces string   all namespaces
+  -d, --dry-run                 dry run, no changes will be made to the cluster
+  -h, --help                    help for skale
+  -n, --namespace string        namespace to scale (default "default")
+  -v, --verbose                 verbose logging
+      --version                 version for skale
+
+Use "skale [command] --help" for more information about a command.
 ```
 
 ## Whats left
@@ -27,6 +48,4 @@ skale up n apis
 ### TODO
 
 - [ ] More/better tests
-- [ ] Update README
-- [ ] Github Actions
 - [ ] Policies around contributions

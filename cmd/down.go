@@ -38,7 +38,7 @@ skale down`,
 		}
 		fmt.Println("Scaling down...")
 
-		namespaces := helpers.ProcessFlags(args, "n")
+		namespaces := helpers.GetNamespaces(args)
 
 		var k k8s.KubernetesAPI = k8s.KubernetesAPI{Client: nil}
 
@@ -48,6 +48,9 @@ skale down`,
 			deploys := k.GetDeployments(n)
 			k.ScaleDeployments(deploys, nil, k8s.ScaleDown, helpers.IsDryRun(args))
 		}
+
+		fmt.Println("Done!")
+
 	},
 	DisableFlagParsing: true,
 }

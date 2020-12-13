@@ -22,10 +22,11 @@
             "env": {},
             "args": [
                 "up",
-                "-n",
-                "default",
-                "-n",
-                "apis",
+                "--all-namespaces",
+                // "-n",
+                // "default",
+                // "-n",
+                // "apis",
                 "-d"
             ]
         },
@@ -38,11 +39,8 @@
             "env": {},
             "args": [
                 "down",
-                "-n",
-                "default",
-                "-n",
-                "apis",
-                "-d"
+                "-A",
+                "--dry-run"
             ]
         },
         {

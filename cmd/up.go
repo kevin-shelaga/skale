@@ -38,7 +38,7 @@ skale up`,
 		}
 		fmt.Println("Scaling up...")
 
-		namespaces := helpers.ProcessFlags(args, "n")
+		namespaces := helpers.GetNamespaces(args)
 
 		var k k8s.KubernetesAPI = k8s.KubernetesAPI{Client: nil}
 
@@ -49,6 +49,8 @@ skale up`,
 			hpas := k.GetHorizontalPodAutoscalers(n)
 			k.ScaleDeployments(deploys, hpas, k8s.ScaleUp, helpers.IsDryRun(args))
 		}
+
+		fmt.Println("Done!")
 	},
 	DisableFlagParsing: true,
 }
