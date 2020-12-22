@@ -1,4 +1,4 @@
-# Skale
+# Skale - WIP
 
 Skale is a CLI written in go to automatically scale up and down deployments in your cluster
 
