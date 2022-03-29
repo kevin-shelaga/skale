@@ -4,8 +4,10 @@ go 1.15
 
 require (
 	github.com/Azure/go-autorest/autorest v0.11.10 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/gophercloud/gophercloud v0.13.0 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
